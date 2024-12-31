@@ -1,6 +1,6 @@
 import { Webhook } from 'svix';
 import { headers } from 'next/headers';
-// import { createOrUpdateUser, deleteUser } from '@/lib/actions/user';
+import { createOrUpdateUser, deleteUser } from '@/lib/actions/user';
 
 export async function POST(req) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
@@ -56,40 +56,40 @@ export async function POST(req) {
   console.log('Webhook body:', body);
 
   if (eventType === 'user.created' || eventType === 'user.updated') {
-    // const { id, first_name, last_name, image_url, email_addresses, username } =
-    //   evt?.data;
-    // try {
-    //   await createOrUpdateUser(
-    //     id,
-    //     first_name,
-    //     last_name,
-    //     image_url,
-    //     email_addresses,
-    //     username
-    //   );
-    //   return new Response('User is created or updated', {
-    //     status: 200,
-    //   });
-    // } catch (error) {
-    //   console.log('Error creating or updating user:', error);
-    //   return new Response('Error occured', {
-    //     status: 400,
-    //   });
-    // }
+    const { id, first_name, last_name, image_url, email_addresses, username } =
+      evt?.data;
+    try {
+      await createOrUpdateUser(
+        id,
+        first_name,
+        last_name,
+        image_url,
+        email_addresses,
+        username
+      );
+      return new Response('User is created or updated', {
+        status: 200,
+      });
+    } catch (error) {
+      console.log('Error creating or updating user:', error);
+      return new Response('Error occured', {
+        status: 400,
+      });
+    }
   }
   if (eventType === 'user.deleted') {
-    // const { id } = evt?.data;
-    // try {
-    //   await deleteUser(id);
-    //   return new Response('User is deleted', {
-    //     status: 200,
-    //   });
-    // } catch (error) {
-    //   console.log('Error deleting user:', error);
-    //   return new Response('Error occured', {
-    //     status: 400,
-    //   });
-    // }
+    const { id } = evt?.data;
+    try {
+      await deleteUser(id);
+      return new Response('User is deleted', {
+        status: 200,
+      });
+    } catch (error) {
+      console.log('Error deleting user:', error);
+      return new Response('Error occured', {
+        status: 400,
+      });
+    }
   }
 
   return new Response('', { status: 200 });
